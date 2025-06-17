@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dimensions, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
 import { colors, ui } from "../../utils/styles";
 import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
@@ -29,39 +29,41 @@ export default function Grid({ items }) {
     return (
         <View style={styles.container}>
 
-            <View style={styles.wrapper}>
-                <TouchableOpacity style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff"}]}>
-                    <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
-                    <Text style={ui.text}>Añadir nueva foto</Text>
-                </TouchableOpacity>
-                {
-                    items && items.length > 0 ?
-                        items.map((item, index) => {
-                            return (
-                                <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
-                                    <View style={styles.box}>
-                                        <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) /2) - 16} onMoveStart={onMoveStart} onMoveEnd={onMoveEnd}>
-                                            <Before>
-                                                <Image style={styles.image} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/milanlaser-fcb24.appspot.com/o/omaha_bw.jpg?alt=media&token=9864378d-74d9-4579-830d-a56e50dc017d' }}  />
-                                            </Before>
-                                            <After>
-                                                <Image style={styles.image} source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/milanlaser-fcb24.appspot.com/o/omaha_color.jpg?alt=media&token=7b3c5be6-ee90-40ec-9f1c-4b52ce655322' }} />
-                                            </After>
-                                            <DefaultDragger />
-                                        </Compare>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            )
-                        })
-                        :
-                        [1,2,3,4, 5].map((_, index) => {
-                            return (
-                                <View key={index} style={[styles.box, { height: 150 }]}></View>
-                            )
-                        })
-                }
-                
-            </View>
+            {/* <View style={styles.wrapper}> */}
+                <ScrollView contentContainerStyle={styles.wrapper}>
+                    <TouchableOpacity style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff" }]}>
+                        <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
+                        <Text style={ui.text}>Añadir nueva foto</Text>
+                    </TouchableOpacity>
+                    {
+                        items && items.length > 0 ?
+                            items.map((item, index) => {
+                                return (
+                                    <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
+                                        <View style={styles.box}>
+                                            <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16} onMoveStart={onMoveStart} onMoveEnd={onMoveEnd}>
+                                                <Before>
+                                                    <Image style={styles.image} source={require("../../../assets/example-before.jpeg")} />
+                                                </Before>
+                                                <After>
+                                                    <Image style={styles.image} source={require("../../../assets/example-after.png")} />
+                                                </After>
+                                                <DefaultDragger />
+                                            </Compare>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                )
+                            })
+                            :
+                            [1, 2, 3, 4, 5].map((_, index) => {
+                                return (
+                                    <View key={index} style={[styles.box, { height: 150 }]}></View>
+                                )
+                            })
+                    }
+
+                </ScrollView>
+            {/* </View> */}
 
         </View>
     )
