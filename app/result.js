@@ -19,7 +19,8 @@ import CreditsModal from "../src/layout/credits-modal";
 // import { useExportPdf } from "../src/hooks/useExportPdf";
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
 import { insertRecord } from "../src/utils/sqlite";
-
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 const CONTAINER_PADDING = 16;
@@ -32,10 +33,10 @@ const CONTAINER_TOTAL_PADDING = CONTAINER_PADDING * 2;
 const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING);
 console.log(deviceHeight);
 export default function Result() {
-    
+
     const params = useLocalSearchParams();
-    
-    const [record, setRecord] = useState({ id: null, old_image: null, new_image: null });
+
+    const [record, setRecord] = useState({ id: null, old_image: null, new_image: null, filename: null });
     const [isSaved, setIsSaved] = useState(false);
     const [textHeight, setTextHeight] = useState(null);
 
@@ -116,7 +117,7 @@ export default function Result() {
             }
             const data = JSON.parse(responseText);
             console.log(data);
-            setRecord(prev => ({ ...prev, old_image: photo.path, new_image: data.output }));
+            setRecord(prev => ({ ...prev, old_image: photo.path, new_image: data.output, filename: photo.filename }));
         } catch (error) {
             console.log(error);
             openModal("credits");
@@ -127,16 +128,14 @@ export default function Result() {
     }
 
     async function share() {
-        /* try {
-            await Share.share({ message: record.result });
-        } catch (error) {
-            console.error('Error al compartir:', error);
-            if (Platform.OS === "android") {
-                ToastAndroid.showWithGravityAndOffset(`Ha ocurrido un error`, ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
-            } else {
-                Alert.alert(`Ha ocurrido un error`);
-            }
-        } */
+        const imageUrl = record.new_image;
+        const fileUri = FileSystem.documentDirectory + `colorize-${record.filename}.png`;
+        const download = await FileSystem.downloadAsync(imageUrl, fileUri);
+        if (await Sharing.isAvailableAsync()) {
+            await Sharing.shareAsync(download.uri);
+        } else {
+            alert('Compartir no está disponible en este dispositivo');
+        }
     }
 
     function changeImage() {
@@ -212,10 +211,10 @@ const styles = StyleSheet.create({
     image: {
         width: IMAGE_WIDTH,
     },
-    
+
     actions: {
 
-        
+
         paddingVertical: ACTIONS_VERTICAL_PADDING,
         paddingHorizontal: 16,
         flexDirection: "row",
