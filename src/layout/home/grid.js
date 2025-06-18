@@ -16,9 +16,9 @@ const BOX_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING - WRAPPER_GAP) / 2;
 const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING - WRAPPER_GAP - BOX_PADDING) / 2;
 
 
-export default function Grid({ items }) {
+export default function Grid({ records }) {
 
-    console.log(items);
+    console.log(records);
 
     return (
         <View style={styles.container}>
@@ -26,14 +26,14 @@ export default function Grid({ items }) {
             <ScrollView contentContainerStyle={styles.wrapper}>
                 <TouchableOpacity
                     style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff" }]}
-                    onPress={() => router.push("/camera")}
+                    onPress={() => router.push("/result")}
                 >
                     <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
                     <Text style={ui.text}>Añadir nueva foto</Text>
                 </TouchableOpacity>
                 {
-                    items && items.length > 0 ?
-                        items.map((item, index) => {
+                    records && records.length > 0 ?
+                        records.map((item, index) => {
                             return (
                                 <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
                                     <View style={styles.box}>

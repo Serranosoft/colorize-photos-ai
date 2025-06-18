@@ -1,23 +1,33 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
 import { colors, ui } from "../src/utils/styles";
 import Grid from "../src/layout/home/grid";
 import Example from "../src/layout/home/example";
 import Header from "../src/layout/header";
+import { useFocusEffect } from "expo-router";
+import { getAllRecords } from "../src/utils/sqlite";
 
 
 
 export default function Home() {
-    
-    useEffect(() => {
-    }, [])
+
+    const [records, setRecords] = useState([]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchDb();
+        }, [])
+    );
+    async function fetchDb() {
+        const result = await getAllRecords();
+        setRecords(result);
+    }
 
     return (
         <>
             <Header />
             <View style={styles.container}>
-                <Grid />
+                <Grid {...{ records }} />
                 <Example />
             </View>
         </>

@@ -6,12 +6,12 @@ export async function initDb() {
     await db.execAsync('PRAGMA foreign_keys = ON');
 
     await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS records (id TEXT PRIMARY KEY NOT NULL, old_image TEXT, new_image TEXT, date TEXT);
+        CREATE TABLE IF NOT EXISTS records (id TEXT PRIMARY KEY NOT NULL, old_image TEXT, new_image TEXT, filename TEXT, date TEXT);
         CREATE TABLE IF NOT EXISTS credits (credits INTEGER);
     `);
 
     // Si no hay registros en credits, se establece 15 como valor inicial.
-    await db.runAsync(`INSERT INTO credits (credits) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM credits)`, 99);
+    await db.runAsync(`INSERT INTO credits (credits) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM credits)`, 15);
 
 }
 
@@ -20,9 +20,9 @@ export async function getAllRecords() {
     return allRows;
 }
 
-export async function insertRecord(old_image, new_image, date) {
+export async function insertRecord(old_image, new_image, filename, date) {
     const id = uuid.v4();
-    db.runAsync("INSERT INTO records (id, old_image, new_image, date) VALUES (?, ?, ?, ?)", id, old_image, new_image, date);
+    db.runAsync("INSERT INTO records (id, old_image, new_image, filename, date) VALUES (?, ?, ?, ?, ?)", id, old_image, new_image, filename, date);
     return id;
 }
 
