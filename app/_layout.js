@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { initDb } from "../src/utils/sqlite";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,7 +26,7 @@ export default function Layout() {
     }, [fontsLoaded]);
 
     useEffect(() => {
-        // initDb();
+        initDb();
     }, []);
 
     if (!fontsLoaded) {

@@ -3,6 +3,7 @@ import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOp
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
 import { colors, ui } from "../../utils/styles";
 import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
 
 const deviceWidth = Dimensions.get("window").width;
 
@@ -17,53 +18,47 @@ const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING - WRAPPER_GAP - BOX_P
 
 export default function Grid({ items }) {
 
-    const [state, setState] = useState({ scrollEnabled: true })
-
-    const onMoveStart = () => {
-        setState({ scrollEnabled: false });
-    }
-    const onMoveEnd = () => {
-        setState({ scrollEnabled: true });
-    }
+    console.log(items);
 
     return (
         <View style={styles.container}>
 
-            {/* <View style={styles.wrapper}> */}
-                <ScrollView contentContainerStyle={styles.wrapper}>
-                    <TouchableOpacity style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff" }]}>
-                        <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
-                        <Text style={ui.text}>Añadir nueva foto</Text>
-                    </TouchableOpacity>
-                    {
-                        items && items.length > 0 ?
-                            items.map((item, index) => {
-                                return (
-                                    <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
-                                        <View style={styles.box}>
-                                            <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16} onMoveStart={onMoveStart} onMoveEnd={onMoveEnd}>
-                                                <Before>
-                                                    <Image style={styles.image} source={require("../../../assets/example-before.jpeg")} />
-                                                </Before>
-                                                <After>
-                                                    <Image style={styles.image} source={require("../../../assets/example-after.png")} />
-                                                </After>
-                                                <DefaultDragger />
-                                            </Compare>
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                )
-                            })
-                            :
-                            [1, 2, 3, 4, 5].map((_, index) => {
-                                return (
-                                    <View key={index} style={[styles.box, { height: 150 }]}></View>
-                                )
-                            })
-                    }
+            <ScrollView contentContainerStyle={styles.wrapper}>
+                <TouchableOpacity
+                    style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff" }]}
+                    onPress={() => router.push("/camera")}
+                >
+                    <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
+                    <Text style={ui.text}>Añadir nueva foto</Text>
+                </TouchableOpacity>
+                {
+                    items && items.length > 0 ?
+                        items.map((item, index) => {
+                            return (
+                                <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
+                                    <View style={styles.box}>
+                                        <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16}>
+                                            <Before>
+                                                <Image style={styles.image} source={require("../../../assets/example-before.jpeg")} />
+                                            </Before>
+                                            <After>
+                                                <Image style={styles.image} source={require("../../../assets/example-after.png")} />
+                                            </After>
+                                            <DefaultDragger />
+                                        </Compare>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        })
+                        :
+                        [1, 2, 3, 4, 5].map((_, index) => {
+                            return (
+                                <View key={index} style={[styles.box, { height: 150 }]}></View>
+                            )
+                        })
+                }
 
-                </ScrollView>
-            {/* </View> */}
+            </ScrollView>
 
         </View>
     )

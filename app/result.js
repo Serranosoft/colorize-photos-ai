@@ -18,6 +18,7 @@ import LottieView from 'lottie-react-native';
 import CreditsModal from "../src/layout/credits-modal";
 // import { useExportPdf } from "../src/hooks/useExportPdf";
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
+import { insertRecord } from "../src/utils/sqlite";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -58,12 +59,12 @@ export default function Result() {
     }, [record])
 
     useEffect(() => {
-        // init();
-        setRecord({
+        init();
+        /* setRecord({
             id: 1,
             old_image: "https://replicate.delivery/pbxt/KDMlP32TacO7kGUrnR1DCM0nVfXDrkbe8gnRqSmgYMLHQVqh/Einstein%2C%20Rejection%2C%20and%20Crafting%20a%20Future.jpeg",
             new_image: "https://replicate.delivery/pbxt/78o8s7hxKPayH9CJsQ9O9HkvBP5TD7QaF2X07kfDfGrZAzLSA/out.png"
-        })
+        }) */
 
     }, [])
 
@@ -78,18 +79,18 @@ export default function Result() {
 
     // Guardar resultado
     async function saveResult() {
-        // setIsSaved(true); // Registrar flag
-        // const id = await insertRecord(record.image, record.result, convertDateToString(new Date())); // Recuperar id del item guardado
-        // setRecord(prev => ({ ...prev, id: id }));
+        setIsSaved(true); // Registrar flag
+        const id = await insertRecord(record.old_image, record.new_image, convertDateToString(new Date())); // Recuperar id del item guardado
+        setRecord(prev => ({ ...prev, id: id }));
     }
 
     // Recuperar registro dado un id
     async function fetchRecord(id) {
-        // setIsSaved(true); // Flag para no persistir
+        setIsSaved(true); // Flag para no persistir
 
         // Recuperar registro y settear valores
-        // const result = await getRecordFromId(id);
-        // setRecord({ id: id, result: result.content, image: result.image });
+        const result = await getRecordFromId(id);
+        setRecord({ id: id, old_image: result.old_image, new_image: result.new_image });
     }
 
     async function analyze(photo) {
@@ -114,12 +115,14 @@ export default function Result() {
                 return;
             }
             const data = JSON.parse(responseText);
-            // setRecord(prev => ({ ...prev, image: photo.path, result: data.output }));
+            console.log(data);
+            setRecord(prev => ({ ...prev, old_image: photo.path, new_image: data.output }));
         } catch (error) {
+            console.log(error);
             openModal("credits");
             // setRecord(prev => ({ ...prev, result: "Ha ocurrido un error durante la transcripción" }));
         } finally {
-            // subtractCredit();
+            subtractCredit();
         }
     }
 
@@ -151,7 +154,7 @@ export default function Result() {
 
                 <View style={styles.wrapper}>
                     {
-                        imageHeight && record.old_image && record.new_image !== null ?
+                        imageHeight && record.new_image !== null ?
                             <View>
                                 <Compare initial={(deviceWidth - 32) / 2} draggerWidth={50} height={imageHeight} width={(deviceWidth - 32)}>
                                     <Before>
