@@ -83,7 +83,7 @@ export default function Camera() {
             width: 900,
             height: 1250,
             cropperToolbarTitle: "Recortar imagen",
-            cropperToolbarWidgetColor: "#f1f1f1",
+            cropperToolbarWidgetColor: colors.accent,
             cropperToolbarColor: colors.primary,
             cropperStatusBarColor: colors.primary,
             cropperActiveWidgetColor: colors.accent,
