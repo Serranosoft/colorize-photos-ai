@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         gap: 12,
         padding: 16,
         alignItems: "center",
+        justifyContent: "space-between",
         backgroundColor: "#fff",
     },
 
@@ -33,7 +34,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 8,
         color: colors.accent,
-        margin: "auto",
     },
 
     back: {
