@@ -35,7 +35,7 @@ export default function Grid({ records }) {
                     records && records.length > 0 ?
                         records.map((item, index) => {
                             return (
-                                <TouchableWithoutFeedback key={index} onPress={() => console.log("a")}>
+                                <TouchableWithoutFeedback key={index} onPress={() => router.navigate({ pathname: "/result", params: { id: item.id } })}>
                                     <View style={styles.box}>
                                         <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16}>
                                             <Before>

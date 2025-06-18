@@ -28,7 +28,9 @@ export default function Home() {
             <Header />
             <View style={styles.container}>
                 <Grid {...{ records }} />
-                <Example />
+                { records.length < 1 &&
+                    <Example />
+                }
             </View>
         </>
     )
