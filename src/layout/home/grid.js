@@ -4,21 +4,19 @@ import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-be
 import { colors, ui } from "../../utils/styles";
 import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
+import GridItem from "./grid-item";
 
 const deviceWidth = Dimensions.get("window").width;
 
 const CONTAINER_PADDING = 16;
 const WRAPPER_GAP = 12;
-const BOX_PADDING = 8;
 
 const CONTAINER_TOTAL_PADDING = CONTAINER_PADDING * 2;
 const BOX_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING - WRAPPER_GAP) / 2;
-const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING - WRAPPER_GAP - BOX_PADDING) / 2;
 
 
-export default function Grid({ records }) {
+export default function Grid({ records, setSelected, selected }) {
 
-    console.log(records);
 
     return (
         <View style={styles.container}>
@@ -35,19 +33,7 @@ export default function Grid({ records }) {
                     records && records.length > 0 ?
                         records.map((item, index) => {
                             return (
-                                <TouchableWithoutFeedback key={index} onPress={() => router.navigate({ pathname: "/result", params: { id: item.id } })}>
-                                    <View style={styles.box}>
-                                        <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16}>
-                                            <Before>
-                                                <Image style={styles.image} source={require("../../../assets/example-before.jpeg")} />
-                                            </Before>
-                                            <After>
-                                                <Image style={styles.image} source={require("../../../assets/example-after.png")} />
-                                            </After>
-                                            <DefaultDragger />
-                                        </Compare>
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                <GridItem {...{ item, index, setSelected, selected, CONTAINER_TOTAL_PADDING, WRAPPER_GAP }} />
                             )
                         })
                         :
@@ -71,20 +57,16 @@ const styles = StyleSheet.create({
         padding: CONTAINER_PADDING,
         alignItems: "center",
     },
-    box: {
-        padding: BOX_PADDING,
-        backgroundColor: colors.secondary,
-        borderRadius: 8,
-        width: BOX_WIDTH,
-    },
+    
     wrapper: {
         flexDirection: "row",
         gap: WRAPPER_GAP,
         flexWrap: "wrap",
     },
-    image: {
-        width: IMAGE_WIDTH,
-        height: deviceWidth / 2
+    box: {
+        width: BOX_WIDTH,
+        backgroundColor: colors.secondary,
+        borderRadius: 8,
     },
     add: {
         width: 48,
