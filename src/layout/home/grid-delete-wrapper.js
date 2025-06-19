@@ -2,7 +2,6 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, ui } from "../../utils/styles";
 
 export default function GridDeleteWrapper({ selected, emptySelected, deleteRecords, }) {
-    console.log(selected);
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => emptySelected()}>

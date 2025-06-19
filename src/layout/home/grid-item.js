@@ -1,5 +1,5 @@
-import { Alert, Dimensions, Image, Platform, StyleSheet, Text, ToastAndroid, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { colors, ui } from "../../utils/styles";
+import { Dimensions, Image, StyleSheet } from "react-native";
+import { colors } from "../../utils/styles";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -7,8 +7,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
-import { Share } from 'react-native';
-import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
+import Compare, { Before, After, DefaultDragger } from 'react-native-before-after-slider-v2';
+import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 
 const deviceWidth = Dimensions.get("screen").width;
 const BOX_PADDING = 8;
@@ -63,7 +63,7 @@ export default function GridItem({ item, index, setSelected, selected, CONTAINER
     }
 
     return (
-        <TouchableWithoutFeedback key={index} onLongPress={highlight} onPress={onPress}>
+        <TouchableWithoutFeedback key={index} onLongPress={highlight} onPress={() => onPress()}>
             <Animated.View style={[
                 styles.box, 
                 isSelected && styles.selected, 
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: colors.text,
         gap: 16,
-        // transform: [{ scale: 1 }]
     },
 
     box: {
