@@ -24,7 +24,7 @@ export default function Grid({ records, setSelected, selected }) {
             <ScrollView contentContainerStyle={styles.wrapper}>
                 <TouchableOpacity
                     style={[styles.box, { justifyContent: "center", alignItems: "center", gap: 8, backgroundColor: "#fff" }]}
-                    onPress={() => router.push("/result")}
+                    onPress={() => router.push("/camera")}
                 >
                     <Image source={require("../../../assets/plus-dark.png")} style={styles.add} />
                     <Text style={ui.text}>Añadir nueva foto</Text>

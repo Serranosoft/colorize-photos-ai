@@ -72,10 +72,10 @@ export default function GridItem({ item, index, setSelected, selected, CONTAINER
                 ]}>
                 <Compare initial={((deviceWidth / 2) - 16 - 16) / 2} draggerWidth={50} height={125} width={((deviceWidth - 48) / 2) - 16}>
                     <Before>
-                        <Image style={[styles.image, { width: IMAGE_WIDTH }]} source={require("../../../assets/example-before.jpeg")} />
+                        <Image style={[styles.image, { width: IMAGE_WIDTH }]} source={{ uri: item.old_image }} />
                     </Before>
                     <After>
-                        <Image style={[styles.image, { width: IMAGE_WIDTH }]} source={require("../../../assets/example-after.png")} />
+                        <Image style={[styles.image, { width: IMAGE_WIDTH }]} source={{ uri: item.new_image }} />
                     </After>
                     <DefaultDragger />
                 </Compare>

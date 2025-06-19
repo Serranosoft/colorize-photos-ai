@@ -18,7 +18,7 @@ import LottieView from 'lottie-react-native';
 import CreditsModal from "../src/layout/credits-modal";
 // import { useExportPdf } from "../src/hooks/useExportPdf";
 import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
-import { insertRecord } from "../src/utils/sqlite";
+import { getRecordFromId, insertRecord } from "../src/utils/sqlite";
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import { convertDateToString } from "../src/utils/date";
@@ -63,13 +63,13 @@ export default function Result() {
     }, [record])
 
     useEffect(() => {
-        // init();
-        setRecord({
-            id: 1,
-            old_image: "https://replicate.delivery/pbxt/KDMlP32TacO7kGUrnR1DCM0nVfXDrkbe8gnRqSmgYMLHQVqh/Einstein%2C%20Rejection%2C%20and%20Crafting%20a%20Future.jpeg",
-            new_image: "https://replicate.delivery/pbxt/78o8s7hxKPayH9CJsQ9O9HkvBP5TD7QaF2X07kfDfGrZAzLSA/out.png",
-            filename: "xdd"
-        })
+        init();
+        // setRecord({
+        //     id: 1,
+        //     old_image: "https://replicate.delivery/pbxt/KDMlP32TacO7kGUrnR1DCM0nVfXDrkbe8gnRqSmgYMLHQVqh/Einstein%2C%20Rejection%2C%20and%20Crafting%20a%20Future.jpeg",
+        //     new_image: "https://replicate.delivery/pbxt/78o8s7hxKPayH9CJsQ9O9HkvBP5TD7QaF2X07kfDfGrZAzLSA/out.png",
+        //     filename: "xdd"
+        // })
 
     }, [])
 
@@ -95,7 +95,7 @@ export default function Result() {
 
         // Recuperar registro y settear valores
         const result = await getRecordFromId(id);
-        setRecord({ id: id, old_image: result.old_image, new_image: result.new_image });
+        setRecord({ id: id, old_image: result.old_image, new_image: result.new_image, filename: result.filename });
     }
 
     async function analyze(photo) {
@@ -121,6 +121,7 @@ export default function Result() {
             }
             const data = JSON.parse(responseText);
             console.log(data);
+            console.log(photo);
             setRecord(prev => ({ ...prev, old_image: photo.path, new_image: data.output, filename: photo.filename }));
         } catch (error) {
             console.log(error);
