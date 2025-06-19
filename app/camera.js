@@ -92,7 +92,7 @@ export default function Camera() {
             if (await canAnalyze()) {
                 const persistentPath = await saveImagePermanently(image.path);
                 image.path = persistentPath;
-                router.navigate({ pathname: "result", params: { image: JSON.stringify(image) } });
+                router.navigate({ pathname: "/result", params: { image: JSON.stringify(image) } });
             } else {
                 openModal("credits");
             }

@@ -21,6 +21,9 @@ import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-be
 import { insertRecord } from "../src/utils/sqlite";
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
+import { convertDateToString } from "../src/utils/date";
+import * as MediaLibrary from 'expo-media-library';
+
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
 const CONTAINER_PADDING = 16;
@@ -31,7 +34,7 @@ const ICON_SIZE = 25;
 
 const CONTAINER_TOTAL_PADDING = CONTAINER_PADDING * 2;
 const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING);
-console.log(deviceHeight);
+
 export default function Result() {
 
     const params = useLocalSearchParams();
@@ -54,18 +57,19 @@ export default function Result() {
     const closeModal = () => setActiveModal(null);
 
     useEffect(() => {
-        if (record.result && !isSaved) {
+        if (record.new_image && !isSaved) {
             saveResult();
         }
     }, [record])
 
     useEffect(() => {
-        init();
-        /* setRecord({
+        // init();
+        setRecord({
             id: 1,
             old_image: "https://replicate.delivery/pbxt/KDMlP32TacO7kGUrnR1DCM0nVfXDrkbe8gnRqSmgYMLHQVqh/Einstein%2C%20Rejection%2C%20and%20Crafting%20a%20Future.jpeg",
-            new_image: "https://replicate.delivery/pbxt/78o8s7hxKPayH9CJsQ9O9HkvBP5TD7QaF2X07kfDfGrZAzLSA/out.png"
-        }) */
+            new_image: "https://replicate.delivery/pbxt/78o8s7hxKPayH9CJsQ9O9HkvBP5TD7QaF2X07kfDfGrZAzLSA/out.png",
+            filename: "xdd"
+        })
 
     }, [])
 
@@ -81,7 +85,7 @@ export default function Result() {
     // Guardar resultado
     async function saveResult() {
         setIsSaved(true); // Registrar flag
-        const id = await insertRecord(record.old_image, record.new_image, convertDateToString(new Date())); // Recuperar id del item guardado
+        const id = await insertRecord(record.old_image, record.new_image, record.filename, convertDateToString(new Date())); // Recuperar id del item guardado
         setRecord(prev => ({ ...prev, id: id }));
     }
 
@@ -121,7 +125,6 @@ export default function Result() {
         } catch (error) {
             console.log(error);
             openModal("credits");
-            // setRecord(prev => ({ ...prev, result: "Ha ocurrido un error durante la transcripción" }));
         } finally {
             subtractCredit();
         }
@@ -140,6 +143,62 @@ export default function Result() {
 
     function changeImage() {
         router.back();
+    }
+
+    async function requestPermissions() {
+        try {
+            const { status } = await MediaLibrary.requestPermissionsAsync(false, ["photo"]);
+            if (status === "granted") {
+                downloadImage();
+            } else {
+                if (Platform.OS === "android") {
+                    ToastAndroid.showWithGravityAndOffset(
+                        "No tengo permisos para acceder a la galería de su dispositivo",
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50,
+                    );
+                } else {
+                    Alert.alert("No tengo permisos para acceder a la galería de su dispositivo");
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async function downloadImage() {
+        try {
+            const { uri } = await FileSystem.downloadAsync(record.new_image, FileSystem.documentDirectory + `${record.filename}.jpg`);
+
+            // Agregar la imagen al álbum
+            const asset = await MediaLibrary.createAssetAsync(uri);
+
+            // Obtener el álbum existente o crearlo
+            let album = await MediaLibrary.getAlbumAsync("Recuerdos a color");
+            if (!album) {
+                album = await MediaLibrary.createAlbumAsync("Recuerdos a color", asset, false);
+            } else {
+                await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+            }
+
+            if (Platform.OS === "android") {
+                ToastAndroid.showWithGravityAndOffset(
+                    "Imagen guardada en tu Galería ",
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50,
+                );
+            } else {
+                Alert.alert("Imagen guardada en tu Galería");
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -187,6 +246,12 @@ export default function Result() {
                             </TouchableOpacity>
                             <Text style={ui.h5}>Cambiar</Text>
                         </View>
+                        <View style={[styles.action, { marginLeft: "auto" }]}>
+                            <TouchableOpacity onPress={() => requestPermissions()} style={styles.button}>
+                                <Image style={styles.icon} source={require("../assets/download-dark.png")} />
+                            </TouchableOpacity>
+                            <Text style={ui.h5}>Descargar</Text>
+                        </View>
                     </View>
                 }
 
@@ -213,10 +278,7 @@ const styles = StyleSheet.create({
     },
 
     actions: {
-
-
         paddingVertical: ACTIONS_VERTICAL_PADDING,
-        paddingHorizontal: 16,
         flexDirection: "row",
         justifyContent: "center",
         gap: 20,
