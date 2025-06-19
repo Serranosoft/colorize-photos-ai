@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import uuid from 'react-native-uuid';
+import { DAILY_CREDITS } from './credits';
 
 const db = SQLite.openDatabaseSync("colorize-old-photos");
 export async function initDb() {
@@ -11,7 +12,7 @@ export async function initDb() {
     `);
 
     // Si no hay registros en credits, se establece 15 como valor inicial.
-    await db.runAsync(`INSERT INTO credits (credits) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM credits)`, 15);
+    await db.runAsync(`INSERT INTO credits (credits) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM credits)`, DAILY_CREDITS);
 
 }
 

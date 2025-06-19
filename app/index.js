@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
-import { colors, ui } from "../src/utils/styles";
+import { useCallback, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { colors } from "../src/utils/styles";
 import Grid from "../src/layout/home/grid";
 import Example from "../src/layout/home/example";
 import Header from "../src/layout/header";

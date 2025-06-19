@@ -6,7 +6,6 @@ import GalleryIcon from '../src/icons/gallery';
 import { colors, ui } from '../src/utils/styles';
 import CreditsModal from '../src/layout/credits-modal';
 import { canAnalyze } from '../src/utils/credits';
-// import ImageCropPicker from "react-native-image-crop-picker";
 import * as ImagePicker from 'expo-image-picker';
 import Header from '../src/layout/header';
 import Button from '../src/components/button';

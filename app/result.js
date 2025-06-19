@@ -1,28 +1,17 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Alert, Dimensions, Image, Platform, ScrollView, Share, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, Platform, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { colors, ui } from "../src/utils/styles";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../src/layout/header";
-// import { getRecordFromId, insertRecord, updateRecord } from "../src/utils/sqlite";
-// import { convertDateToString } from "../src/utils/date";
-// import ImagePreviewResult from "../src/layout/image-preview-result";
-// import * as Clipboard from 'expo-clipboard';
 import LottieView from 'lottie-react-native';
-// import BottomSheet, {
-// BottomSheetScrollView,
-// } from '@gorhom/bottom-sheet';
-// import { languages } from "../src/utils/languages";
-// import { openai } from "../src/components/openai";
-// import { GET_LANGUAGE_PROMPT } from "../src/utils/options";
-// import { canAnalyze, subtractCredit } from "../src/utils/credits";
 import CreditsModal from "../src/layout/credits-modal";
-// import { useExportPdf } from "../src/hooks/useExportPdf";
-import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
+import Compare, { Before, After, DefaultDragger } from 'react-native-before-after-slider-v2';
 import { getRecordFromId, insertRecord } from "../src/utils/sqlite";
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import { convertDateToString } from "../src/utils/date";
 import * as MediaLibrary from 'expo-media-library';
+import { subtractCredit } from "../src/utils/credits";
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -121,7 +110,6 @@ export default function Result() {
             }
             const data = JSON.parse(responseText);
             console.log(data);
-            console.log(photo);
             setRecord(prev => ({ ...prev, old_image: photo.path, new_image: data.output, filename: photo.filename }));
         } catch (error) {
             console.log(error);

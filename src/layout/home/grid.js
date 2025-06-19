@@ -1,8 +1,5 @@
-import { useState } from "react";
-import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Compare, { Before, After, DefaultDragger, Dragger } from 'react-native-before-after-slider-v2';
+import { Dimensions, Image,  ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors, ui } from "../../utils/styles";
-import { TouchableWithoutFeedback } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import GridItem from "./grid-item";
 
