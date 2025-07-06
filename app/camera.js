@@ -1,6 +1,6 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import GalleryIcon from '../src/icons/gallery';
 import { colors, ui } from '../src/utils/styles';
@@ -11,6 +11,7 @@ import Header from '../src/layout/header';
 import Button from '../src/components/button';
 import * as FileSystem from 'expo-file-system';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import * as MediaLibrary from 'expo-media-library';
 
 export default function Camera() {
 
@@ -69,33 +70,55 @@ export default function Camera() {
 
     // Persistir la imagen en el dispositivo
     async function saveImagePermanently(tempUri) {
-        const fileName = tempUri.split('/').pop();
-        const newPath = `${FileSystem.documentDirectory}${fileName}`;
-        await FileSystem.copyAsync({ from: tempUri, to: newPath });
-        return newPath;
+        if (Platform.OS === "android") {
+            const fileName = tempUri.split('/').pop();
+            const newPath = `${FileSystem.documentDirectory}${fileName}`;
+            await FileSystem.copyAsync({ from: tempUri, to: newPath });
+            return newPath;
+        } else {
+            const asset = await MediaLibrary.createAssetAsync(decodeURIComponent(tempUri));
+            let album = await MediaLibrary.getAlbumAsync("Recuerdos a color");
+
+            if (album) {
+                await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+            } else {
+                await MediaLibrary.createAlbumAsync("Recuerdos a color", asset, false);
+            }
+            return asset.uri;
+        }
     };
 
 
-    function openCropper() {
-        ImageCropPicker.openCropper({
-            path: decodeURIComponent(image.uri),
-            width: 900,
-            height: 1250,
-            cropperToolbarTitle: "Recortar imagen",
-            cropperToolbarWidgetColor: colors.accent,
-            cropperToolbarColor: colors.primary,
-            cropperStatusBarColor: colors.primary,
-            cropperActiveWidgetColor: colors.accent,
-            compressImageQuality: 1
-        }).then(async (image) => {
+    async function openCropper() {
+        if (Platform.OS === "android") {
+            ImageCropPicker.openCropper({
+                path: decodeURIComponent(image.uri),
+                width: 900,
+                height: 1250,
+                cropperToolbarTitle: "Recortar imagen",
+                cropperToolbarWidgetColor: colors.accent,
+                cropperToolbarColor: colors.primary,
+                cropperStatusBarColor: colors.primary,
+                cropperActiveWidgetColor: colors.accent,
+                compressImageQuality: 1
+            }).then(async (image) => {
+                if (await canAnalyze()) {
+                    const persistentPath = await saveImagePermanently(image.path);
+                    image.path = persistentPath;
+                    router.navigate({ pathname: "/result", params: { image: JSON.stringify(image) } });
+                } else {
+                    openModal("credits");
+                }
+            });
+        } else {
             if (await canAnalyze()) {
-                const persistentPath = await saveImagePermanently(image.path);
+                const persistentPath = await saveImagePermanently(image.uri);
                 image.path = persistentPath;
                 router.navigate({ pathname: "/result", params: { image: JSON.stringify(image) } });
             } else {
                 openModal("credits");
             }
-        });
+        }
     }
 
     async function takePicture() {
@@ -221,7 +244,7 @@ const styles = StyleSheet.create({
         padding: 24
 
     },
-    
+
     preview: {
         position: "absolute",
         bottom: 40,

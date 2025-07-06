@@ -18,7 +18,8 @@
       "buildNumber": "1.1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "Permite a Recuerdos a Color acceder a sus fotos"
+        "NSCameraUsageDescription": "Permite a Recuerdos a Color acceder a sus fotos",
+        "NSPhotoLibraryUsageDescription": "Recortar foto para analizar"
       }
     },
     "android": {

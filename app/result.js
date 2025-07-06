@@ -110,8 +110,8 @@ export default function Result() {
     async function analyze(photo) {
         const formData = new FormData();
         formData.append('image', {
-            uri: photo.path,
-            type: photo.mime,
+            uri: Platform.OS === "android" ? photo.path : photo.uri,
+            type: Platform.OS === "android" ? photo.mime : photo.mimeType,
             name: photo.filename,
         });
         try {
