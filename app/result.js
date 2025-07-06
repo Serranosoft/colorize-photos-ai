@@ -37,8 +37,6 @@ export default function Result() {
     const [imageHeight, setImageHeight] = useState(null);
     useEffect(() => {
         if (textHeight) {
-            console.log(textHeight);
-            console.log(deviceHeight);
             let IMAGE_HEIGHT = null;
             if (Platform.OS === "android") {
                 IMAGE_HEIGHT = deviceHeight - CONTAINER_TOTAL_PADDING - CONTAINER_GAP - (40 + 32 + 2) - (ACTIONS_VERTICAL_PADDING * 2) - (BUTTON_PADDING * 2) - ICON_SIZE - textHeight;
