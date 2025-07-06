@@ -12,6 +12,7 @@ import * as FileSystem from 'expo-file-system';
 import { convertDateToString } from "../src/utils/date";
 import * as MediaLibrary from 'expo-media-library';
 import { subtractCredit } from "../src/utils/credits";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const deviceWidth = Dimensions.get("window").width;
 const deviceHeight = Dimensions.get("window").height;
@@ -27,6 +28,7 @@ const IMAGE_WIDTH = (deviceWidth - CONTAINER_TOTAL_PADDING);
 export default function Result() {
 
     const params = useLocalSearchParams();
+    const insets = useSafeAreaInsets();
 
     const [record, setRecord] = useState({ id: null, old_image: null, new_image: null, filename: null });
     const [isSaved, setIsSaved] = useState(false);
@@ -35,7 +37,25 @@ export default function Result() {
     const [imageHeight, setImageHeight] = useState(null);
     useEffect(() => {
         if (textHeight) {
-            const IMAGE_HEIGHT = deviceHeight - CONTAINER_TOTAL_PADDING - CONTAINER_GAP - (40 + 32 + 2) - (ACTIONS_VERTICAL_PADDING * 2) - (BUTTON_PADDING * 2) - ICON_SIZE - textHeight;
+            console.log(textHeight);
+            console.log(deviceHeight);
+            let IMAGE_HEIGHT = null;
+            if (Platform.OS === "android") {
+                IMAGE_HEIGHT = deviceHeight - CONTAINER_TOTAL_PADDING - CONTAINER_GAP - (40 + 32 + 2) - (ACTIONS_VERTICAL_PADDING * 2) - (BUTTON_PADDING * 2) - ICON_SIZE - textHeight;
+            } else {
+                IMAGE_HEIGHT =
+                    deviceHeight
+                    - insets.top
+                    - insets.bottom
+                    - CONTAINER_TOTAL_PADDING
+                    - CONTAINER_GAP
+                    - (40 + 32 + 2)
+                    - (ACTIONS_VERTICAL_PADDING * 2)
+                    - (BUTTON_PADDING * 2)
+                    - ICON_SIZE
+                    - textHeight;
+            }
+
             setImageHeight(IMAGE_HEIGHT);
         }
     }, [textHeight])
