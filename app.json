@@ -17,9 +17,11 @@
       "bundleIdentifier": "com.paulaymanu113.colorize",
       "buildNumber": "1.1",
       "infoPlist": {
+        "UIFileSharingEnabled": true,
         "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "Permite a Recuerdos a Color acceder a sus fotos",
-        "NSPhotoLibraryUsageDescription": "Recortar foto para analizar"
+        "NSPhotoLibraryUsageDescription": "Recortar foto para analizar",
+        "NSPhotoLibraryAddUsageDescription": "Necesitamos guardar la imagen generada en tu galería"
       }
     },
     "android": {
@@ -51,7 +53,9 @@
           "savePhotosPermission": "Permite a Recuerdos a Color guardar imagenes",
           "isAccessMediaLocationEnabled": true
         }
-      ]
+      ],
+      "expo-router",
+      "expo-sqlite"
     ]
   }
 }
