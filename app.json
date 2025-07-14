@@ -2,7 +2,7 @@
   "expo": {
     "name": "Recuerdos a color",
     "slug": "colorize",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/colorize-icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.paulaymanu113.colorize",
-      "buildNumber": "1.3",
+      "buildNumber": "1.4",
       "infoPlist": {
         "UIFileSharingEnabled": true,
         "ITSAppUsesNonExemptEncryption": false,

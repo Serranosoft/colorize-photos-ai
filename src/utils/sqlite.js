@@ -2,8 +2,18 @@ import * as SQLite from 'expo-sqlite';
 import uuid from 'react-native-uuid';
 import { DAILY_CREDITS } from './credits';
 
-const db = SQLite.openDatabaseSync("colorize-old-photos");
+let db;
+
+export async function getDb() {
+    if (!db) {
+        db = await SQLite.openDatabaseAsync("colorize-old-photos");
+    }
+    return db;
+}
+
 export async function initDb() {
+    const db = await getDb();
+
     await db.execAsync('PRAGMA foreign_keys = ON');
 
     await db.execAsync(`
@@ -17,33 +27,37 @@ export async function initDb() {
 }
 
 export async function getAllRecords() {
+    const db = await getDb();
     const allRows = await db.getAllAsync('SELECT * FROM records');
     return allRows;
 }
 
 export async function insertRecord(old_image, new_image, filename, date) {
+    const db = await getDb();
     const id = uuid.v4();
     db.runAsync("INSERT INTO records (id, old_image, new_image, filename, date) VALUES (?, ?, ?, ?, ?)", id, old_image, new_image, filename, date);
     return id;
 }
 
 export async function deleteRecordFromId(id) {
+    const db = await getDb();
     db.runAsync("DELETE FROM records WHERE id = ?", id);
 }
 
 export async function getRecordFromId(id) {
+    const db = await getDb();
     const x = await db.getFirstAsync('SELECT * FROM records WHERE id = ?', id);
     return x;
 }
 
 
-
-
 // CREDITS
 export async function getCredits() {
+    const db = await getDb();
     const x = await db.getAllAsync("SELECT * FROM credits");
     return x[0].credits;
 }
 export async function updateCredits(credits) {
+    const db = await getDb();
     db.runAsync("UPDATE credits SET credits = ?", credits);
 }
