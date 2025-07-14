@@ -10,8 +10,14 @@ import * as ImagePicker from 'expo-image-picker';
 import Header from '../src/layout/header';
 import Button from '../src/components/button';
 import * as FileSystem from 'expo-file-system';
-import ImageCropPicker from 'react-native-image-crop-picker';
 import * as MediaLibrary from 'expo-media-library';
+import * as ImageManipulator from 'expo-image-manipulator';
+
+let ImageCropPicker;
+if (Platform.OS === "android") {
+    ImageCropPicker = require("react-native-image-crop-picker");
+}
+
 
 export default function Camera() {
 
@@ -112,7 +118,14 @@ export default function Camera() {
             });
         } else {
             if (await canAnalyze()) {
-                const persistentPath = await saveImagePermanently(image.uri);
+
+                const resized = await ImageManipulator.manipulateAsync(
+                    image.uri,
+                    [{ resize: { width: 900, height: 1250 } }],
+                    { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+                );
+
+                const persistentPath = await saveImagePermanently(resized.uri);
                 image.path = persistentPath;
                 router.navigate({ pathname: "/result", params: { image: JSON.stringify(image) } });
             } else {
